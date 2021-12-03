@@ -1,4 +1,9 @@
 # myLM
 Implementing Linear Regression Model
 
-[![R-CMD-check](https://github.com/wjhlang/myLM/actions/workflows/check-release.yaml/badge.svg)](https://github.com/wjhlang/myLM/actions/workflows/check-release.yaml) [![test-coverage](https://github.com/wjhlang/myLM/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/wjhlang/myLM/actions/workflows/test-coverage.yaml)
+<!-- Badges Start -->
+[![R-CMD-check](https://github.com/wjhlang/myLM/workflows/R-CMD-check/badge.svg)](https://github.com/wjhlang/myLM/actions)
+[![codecov](https://codecov.io/gh/wjhlang/myLM/branch/main/graph/badge.svg?token=VJPRJOQ2B3)](https://codecov.io/gh/wjhlang/myLM)
+<!-- Badges End -->
+
+myLM is a package implementing the original lm function, generating the same output with some optimization.
