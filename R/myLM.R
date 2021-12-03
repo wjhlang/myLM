@@ -98,11 +98,11 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   fit[["assign"]] = myassign
 
   # If subset is non-null, a string is expected
-  if (!is.null(subset) && is.character(subset)){
+  if (!is.null(subset) && is.character(subset) && length(subset) == 1){
     myx = subset(as.data.frame(myx), eval(parse(text=subset)))
     myx = as.matrix(myx)
     myframe = subset(myframe, eval(parse(text=subset)))
-  } else if(!is.null(subset) && !is.character(subset)){
+  } else if(!is.null(subset) && (!is.character(subset) || length(subset) != 1)){
     stop('Invalid input, subset is expected to be a string.')
   }
   # Transpose x
