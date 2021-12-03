@@ -72,3 +72,4 @@ plot(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris))
 ```
 ![Diagnostic Plots](tree/main/figures/Rplot.png)
 
+
