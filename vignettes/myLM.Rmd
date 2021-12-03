@@ -18,17 +18,101 @@ knitr::opts_chunk$set(
 library(myLM)
 ```
 
-To use function `myLM`:
+Installation:
 
+```{r}
+devtools::install_github("wjhlang/myLM")
+library(myLM)
+```
+
+## Basic usage of function `myLM`:
+To explore the usage of `myLM`, we'll use the dataset `iris`. This dataset contains `r nrow(data("iris"))` observations and `r ncol(data("iris"))` columns.
 ```{r}
 data("iris")
 x = iris$Petal.Width
 y = iris$Petal.Length
 myLM(y~x)
 # Equivalently
+
 myLM(Petal.Length~Petal.Width, data = iris)
 
-
-
-
+# This gives the exact same result as the original lm function
+lm(Petal.Length~Petal.Width, data = iris)
 ```
+
+# Usage of different parameters
+Usage of weights
+
+```{r}
+# Get random numbers from the uniform distribution as the weights
+rand = runif(nrow(iris))
+myLM(Petal.Length~Petal.Width,data = iris, weights = rand)
+
+# Compare with the lm function
+lm(Petal.Length~Petal.Width,data = iris, weights = rand)
+```
+
+Usage of subset
+
+```{r}
+myLM(Petal.Length~Petal.Width,data = iris, subset = "Petal.Width<2")
+
+# Compare with the lm function
+lm(Petal.Length~Petal.Width,data = iris, subset = Petal.Width<2)
+```
+Usage of method
+
+```{r}
+head(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame"))
+
+# Compare with the lm function
+all.equal(as.matrix(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame")), as.matrix(lm(Petal.Length~Petal.Width,data = iris, method = "model.frame")))
+```
+
+Usage of model: Slight optimization that outputs the interaction term as well.
+
+```{r}
+head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model) # Same as myLM(Petal.Length~Petal.Width,data = iris)
+
+# Compare with the lm function
+head(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model)
+```
+Use of x, y
+
+```{r}
+head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x)
+head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
+
+# Compare with the lm function
+all.equal(as.matrix(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x),as.matrix(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x))
+all.equal(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y,lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
+```
+Summary (benefites of the 'lm' class)
+
+```{r}
+summary(myLM(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
+# Compare with the lm function
+summary(lm(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
+```
+
+Diagnostic Plots (benefites of the 'lm' class)
+
+```{r}
+par(mfrow=c(2,2))
+par(mar=c(2,2,2,2))
+plot(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
+# Compare with the lm function
+par(mfrow=c(2,2))
+par(mar=c(2,2,2,2))
+plot(lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
+```
+
+Compare efficiency
+
+```{r}
+bnch = bench::mark(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients, lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients)
+bnch
+```
+
+The lack efficiency might be due to that I'm trying to implement everything in the original function,which slows down the process a bit.
+

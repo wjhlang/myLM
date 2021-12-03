@@ -8,7 +8,7 @@ test_that("myLM works", {
   expect_equal(round(as.numeric(myLM(Petal.Length~Petal.Width,data = iris, subset = "Petal.Width<2")$coefficients),4), c(0.9043, 2.4955))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, subset = Petal.Width<2))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, subset = 123))
-  expect_equal(round(as.numeric(myLM(Petal.Length~Petal.Width,data = iris, weights = rep(0.5,150))$coefficients),6), round(as.numeric(lm(Petal.Length~Petal.Width,data = iris, weights = rep(0.5,150))$coefficients),6))
+  expect_equal(round(as.numeric(myLM(Petal.Length~Petal.Width,data = iris, weights = rand)$coefficients),6), round(as.numeric(lm(Petal.Length~Petal.Width,data = iris, weights = rand)$coefficients),6))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, weights = 1))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, qr = 123))
   expect_equal(round(as.numeric(myLM(Petal.Length~Petal.Width, data = iris, qr = F)$coefficients),6), c(1.083558,2.229940))
