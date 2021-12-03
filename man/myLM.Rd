@@ -59,7 +59,7 @@ An object of class "lm" is a list containing at least the following components:
 \item{na.action}{(only where relevant) if not default, the assigned na.action}
 }
 \description{
-Implementing a Linear Regression Model
+Implementing a Linear Regression Model.
 }
 \examples{
 data("iris")

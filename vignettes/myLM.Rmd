@@ -18,7 +18,16 @@ knitr::opts_chunk$set(
 library(myLM)
 ```
 
+To use function `myLM`:
+
 ```{r}
+data("iris")
+x = iris$Petal.Width
+y = iris$Petal.Length
+myLM(y~x)
+# Equivalently
+myLM(Petal.Length~Petal.Width, data = iris)
+
 
 
 
