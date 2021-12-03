@@ -93,9 +93,14 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
     myx = model.matrix(formula, contrasts.arg = contrasts)
     myframe = model.frame(formula)
   }
+  # Add assign to the list
+  myassign = attr(myx,"assign")
+  fit[["assign"]] = myassign
+
   # If subset is non-null, a string is expected
   if (!is.null(subset) && is.character(subset)){
-    myx = subset(myx, eval(parse(text=subset)))
+    myx = subset(as.data.frame(myx), eval(parse(text=subset)))
+    myx = as.matrix(myx)
     myframe = subset(myframe, eval(parse(text=subset)))
   } else if(!is.null(subset) && !is.character(subset)){
     stop('Invalid input, subset is expected to be a string.')
@@ -144,9 +149,6 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   fit[["effect"]] = myeffect
   # Add rank to the list
   fit[["rank"]] = myqr$rank
-  # Add assign to the list
-  myassign = attr(myx,"assign")
-  fit[["assign"]] = myassign
   # Add df.residual to the list
   fit[["df.residual"]] = n - ncol(myx)
   # Add call to the list
