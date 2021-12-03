@@ -21,7 +21,7 @@ library(myLM)
 Installation:
 
 ```{r}
-devtools::install_github("wjhlang/myLM")
+#devtools::install_github("wjhlang/myLM")
 library(myLM)
 ```
 
