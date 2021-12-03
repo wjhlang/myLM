@@ -8,7 +8,7 @@ Implementing Linear Regression Model
 
 
 ## Overview
-myLM is a package implementing the original lm function, generating the same output with some optimization. This package aims to output the exact same output as the original lm() function with minimal optimization.
+myLM is a package implementing the original lm function, its myLM() aims to generate the same output as the original lm() function with minimal optimization that can output the model with interaction terms which the originical function don't. Ordinary least squares or weighted least squares can be used in the function depending on your choice, and the current only supported method is QR decomposition.
 
 ## Installation
 ```
@@ -70,6 +70,6 @@ par(mfrow=c(2,2))
 par(mar=c(2,2,2,2))
 plot(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris))
 ```
-![Diagnostic Plots](tree/main/figures/Rplot.png)
+![Diagnostic Plots](figures/Rplot.png)
 
 
