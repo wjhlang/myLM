@@ -19,11 +19,11 @@ myLM(
 )
 }
 \arguments{
-\item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. A 1-D vector of response is expected.}
+\item{formula}{an object of class "formula": a symbolic description of the model to be fitted. A 1-D vector of response is expected.}
 
-\item{data}{an optional data frame, list or environment containing the variables in the model. Default to NULL and the variables are taken from formula.}
+\item{data}{an optional data frame, list or environment containing the variables in the model. Default to NULL and then the variables are taken from formula.}
 
-\item{weights}{an optional vector of weights to be used in the fitting process, default to NULL. If non-NULL, weighted least squares is used with weights weights, otherwise ordinary least squares is used.}
+\item{weights}{an optional vector of weights to be used in the fitting process, default to NULL. If non-NULL, weighted least squares is used with weights, otherwise ordinary least squares is used.}
 
 \item{subset}{an optional string specifying a subset of observations to be used in the fitting process, default to NULL.}
 
@@ -46,8 +46,6 @@ An object of class "lm" is a list containing at least the following components:
 \item{rank}{the numeric rank of the fitted linear model.}
 \item{fitted.values}{the fitted mean values.}
 \item{assign}{an integer vector with an entry for each column in the matrix giving the term in the formula which gave rise to the column.}
-\item{qr}{if requested, the QR decomposition of the design matrix.}
-\item{qr}{if requested, the QR decomposition of the design matrix.}
 \item{qr}{if requested, the QR decomposition of the design matrix.}
 \item{df.residual}{the residual degrees of freedom.}
 \item{call}{the matched call.}

@@ -2,10 +2,10 @@
 #'
 #' Implementing a Linear Regression Model.
 #'
-#' @param formula an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. A 1-D vector of response is expected.
-#' @param data an optional data frame, list or environment containing the variables in the model. Default to NULL and the variables are taken from formula.
+#' @param formula an object of class "formula": a symbolic description of the model to be fitted. A 1-D vector of response is expected.
+#' @param data an optional data frame, list or environment containing the variables in the model. Default to NULL and then the variables are taken from formula.
 #' @param subset an optional string specifying a subset of observations to be used in the fitting process, default to NULL.
-#' @param weights	an optional vector of weights to be used in the fitting process, default to NULL. If non-NULL, weighted least squares is used with weights weights, otherwise ordinary least squares is used.
+#' @param weights	an optional vector of weights to be used in the fitting process, default to NULL. If non-NULL, weighted least squares is used with weights, otherwise ordinary least squares is used.
 #' @param na.actions an user specified action when dealing with NA values, can be viewed by getOption("na.action").
 #' @param method the method to be used when fitting the model, defaulted and currently only supported with "qr". method = "model.frame" returns the model frame without fitting the model.
 #' @param model,x,y,qr logicals. Will return the corresponding components of the fit if TRUE.
@@ -21,8 +21,6 @@
 #' \item{rank}{the numeric rank of the fitted linear model.}
 #' \item{fitted.values}{the fitted mean values.}
 #' \item{assign}{an integer vector with an entry for each column in the matrix giving the term in the formula which gave rise to the column.}
-#' \item{qr}{if requested, the QR decomposition of the design matrix.}
-#' \item{qr}{if requested, the QR decomposition of the design matrix.}
 #' \item{qr}{if requested, the QR decomposition of the design matrix.}
 #' \item{df.residual}{the residual degrees of freedom.}
 #' \item{call}{the matched call.}
@@ -124,7 +122,8 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
     stop("variable lengths differ (found for '(weights)').")
   } else {
     # Use weighted least squared if weights is non-null
-    beta = solve(tx%*%diag(weights)%*%myx) %*% tx%*%diag(weights)%*%myy
+    diagw = diag(weights)
+    beta = solve(tx%*%diagw%*%myx) %*% tx%*%diagw%*%myy
   }
   # Convert beta to a named vector
   mybeta = setNames(beta[,1], rownames(beta))
@@ -152,12 +151,10 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   # Get the effect
   myeffect = qr.qty(myqr, myy)
   fit[["effect"]] = myeffect
-  # Add rank to the list
   fit[["rank"]] = myqr$rank
-  # Add df.residual to the list
   fit[["df.residual"]] = n - ncol(myx)
-  # Add call to the list
-  fit[["call"]] = match.call()
+  fit[["call"]] = match.call
+
   # Get the terms object used
   myterms = terms(formula)
   fit[["terms"]] = myterms
