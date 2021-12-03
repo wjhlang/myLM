@@ -75,6 +75,11 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
       myframe = model.frame(formula)
     }
     dfx = as.data.frame(myx)
+    # In case of matrix of x
+    myframe = as.matrix(myframe)
+    myframe = as.data.frame(myframe)
+    # Change myframe colnames as model.frame and model.matrix generate different names
+    colnames(myframe) = gsub("\\.(?=[0-9])", "", colnames(myframe), perl=TRUE)
     # Get common columns
     common = intersect(colnames(myframe),  colnames(dfx))
     # Get the different columns (interactions) and keep the column name
@@ -160,6 +165,11 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   # if requested (the default), get the model frame used
   if(model == TRUE){
     dfx = as.data.frame(myx)
+    # In case of matrix of x
+    myframe = as.matrix(myframe)
+    myframe = as.data.frame(myframe)
+    # Change myframe colnames as model.frame and model.matrix generate different names
+    colnames(myframe) = gsub("\\.(?=[0-9])", "", colnames(myframe), perl=TRUE)
     # Get common columns
     common = intersect(colnames(myframe),  colnames(dfx))
     # Get the different columns (interactions) and keep the column name

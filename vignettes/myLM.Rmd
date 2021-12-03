@@ -26,7 +26,7 @@ library(myLM)
 ```
 
 ## Basic usage of function `myLM`:
-To explore the usage of `myLM`, we'll use the dataset `iris`. This dataset contains `r nrow(data("iris"))` observations and `r ncol(data("iris"))` columns.
+To explore the usage of `myLM`, we'll use the dataset `iris`. This dataset contains `r nrow(data("iris"))` observations and `r ncol(data("iris"))` columns. We'll also be using simulated data in the examples later on.
 ```{r}
 data("iris")
 x = iris$Petal.Width
@@ -40,6 +40,13 @@ myLM(Petal.Length~Petal.Width, data = iris)
 lm(Petal.Length~Petal.Width, data = iris)
 ```
 
+Simulated dataset
+
+```{r}
+x <- matrix(rnorm(10000), nrow=2000)
+y <- x%*%rnorm(5,1,10) + rnorm(2000,0,0.5)
+```
+
 # Usage of different parameters
 Usage of weights
 
@@ -50,6 +57,14 @@ myLM(Petal.Length~Petal.Width,data = iris, weights = rand)
 
 # Compare with the lm function
 lm(Petal.Length~Petal.Width,data = iris, weights = rand)
+
+# On simulated dataset
+# Get random numbers from the uniform distribution as the weights
+rand = runif(nrow(x))
+myLM(y~x, weights = rand)
+
+# Compare with the lm function
+lm(y~x, weights = rand)
 ```
 
 Usage of subset
@@ -67,6 +82,16 @@ head(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame"))
 
 # Compare with the lm function
 all.equal(as.matrix(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame")), as.matrix(lm(Petal.Length~Petal.Width,data = iris, method = "model.frame")))
+
+# On simulated dataset
+head(myLM(y~x, method = "model.frame"))
+
+# Compare with the lm function
+comp1 = as.matrix(myLM(y~x, method = "model.frame"))
+colnames(comp1) = NULL
+comp2 = as.matrix(lm(y~x, method = "model.frame"))
+colnames(comp2) = NULL
+all.equal(comp1, comp2)
 ```
 
 Usage of model: Slight optimization that outputs the interaction term as well.
@@ -76,6 +101,11 @@ head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model) # 
 
 # Compare with the lm function
 head(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model)
+
+# On simulated dataset
+head(myLM(y~x)$model)
+
+head(lm(y~x)$model)
 ```
 Use of x, y
 
@@ -87,12 +117,18 @@ head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
 all.equal(as.matrix(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x),as.matrix(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x))
 all.equal(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y,lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
 ```
+
 Summary (benefites of the 'lm' class)
 
 ```{r}
 summary(myLM(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
 # Compare with the lm function
 summary(lm(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
+
+# On simulated dataset
+summary(myLM(y~x))
+# Compare with the lm function
+summary(lm(y~x))
 ```
 
 Diagnostic Plots (benefites of the 'lm' class)
@@ -110,9 +146,12 @@ plot(lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
 Compare efficiency
 
 ```{r}
-bnch = bench::mark(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients, lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients)
-bnch
+bnch1 = bench::mark(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients, lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients)
+bnch1
+
+bnch2 = bench::mark(myLM(y~x)$coefficients, lm(y~x)$coefficients)
+bnch2
 ```
 
-The lack efficiency might be due to that I'm trying to implement everything in the original function,which slows down the process a bit.
+The lack efficiency might be due to that I'm trying to implement everything in the original function, which slows down the process a bit.
 

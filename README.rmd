@@ -1,3 +1,15 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  out.width = "100%"
+)
+options(tibble.print_min = 5, tibble.print_max = 5)
+```
+
 # myLM
 Implementing Linear Regression Model
 
@@ -6,20 +18,32 @@ Implementing Linear Regression Model
 [![codecov](https://codecov.io/gh/wjhlang/myLM/branch/main/graph/badge.svg?token=VJPRJOQ2B3)](https://codecov.io/gh/wjhlang/myLM)
 <!-- Badges End -->
 
-
 ## Overview
 myLM is a package implementing the original lm function, generating the same output with some optimization. This package aims to output the exact same output as the original lm() function with minimal optimization.
 
 ## Installation
-```
+```{r, eval=FALSE}
 devtools::install_github("wjhlang/myLM")
 library(myLM)
 ```
+
 ## Usage
-```
+```{r}
 library(myLM)
 data("iris")
-myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)
 
+# Output call and coefficients
+myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris)
 
+# Output call and coefficients for weighted least squares
+myLM(Petal.Length~Petal.Width*Sepal.Width, data = iris, weight = runif(nrow(iris)))
+
+# Output the summary
+lmod = myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris)
+summary(lmod)
+
+# Output diagnostic plots
+par(mfrow=c(2,2))
+par(mar=c(2,2,2,2))
+plot(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris))
 ```
