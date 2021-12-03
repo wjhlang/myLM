@@ -70,4 +70,5 @@ par(mfrow=c(2,2))
 par(mar=c(2,2,2,2))
 plot(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris))
 ```
-![Diagnostic Plots](https://github.com/wjhlang/myLM/tree/main/figures/Rplot.png)
+![Diagnostic Plots](tree/main/figures/Rplot.png)
+
