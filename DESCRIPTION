@@ -18,3 +18,5 @@ Suggests:
     bench (>= 1.1.2)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
