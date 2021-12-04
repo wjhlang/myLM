@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, include=FALSE}
 library(myLM)
 ```
 
@@ -42,9 +42,14 @@ lm(Petal.Length~Petal.Width, data = iris)
 
 Simulated dataset
 
+```{r, eval=FALSE}
+y = x%*%rnorm(5,1,10) + rnorm(10000,0,0.5)
+x = matrix(rnorm(50000), nrow=10000) 
+simdata = as.data.frame(cbind(y,x))
+colnames(simdata) = c("y", "x1", "x2", "x3", "x4", "x5")
+```
 ```{r}
-data("y") # y = x%*%rnorm(5,1,10) + rnorm(10000,0,0.5)
-data("x") # x = matrix(rnorm(50000), nrow=10000) 
+data("simdata")
 ```
 
 # Usage of different parameters
@@ -60,11 +65,11 @@ lm(Petal.Length~Petal.Width,data = iris, weights = rand)
 
 # On simulated dataset
 # Get random numbers from the uniform distribution as the weights
-rand = runif(nrow(x))
-myLM(y~x, weights = rand)
+rand = runif(nrow(simdata))
+myLM(y~x1+x2+x3+x4+x5, data = simdata, weights = rand)
 
 # Compare with the lm function
-lm(y~x, weights = rand)
+lm(y~., data = simdata,weights = rand)
 ```
 
 Usage of subset
@@ -74,6 +79,13 @@ myLM(Petal.Length~Petal.Width,data = iris, subset = "Petal.Width<2")
 
 # Compare with the lm function
 lm(Petal.Length~Petal.Width,data = iris, subset = Petal.Width<2)
+
+# On simulated dataset
+rand = runif(nrow(simdata))
+myLM(y~x1+x2+x3+x4+x5, data = simdata, subset = "x5<3")
+
+# Compare with the lm function
+lm(y~., data = simdata,subset = x5<3)
 ```
 Usage of method
 
@@ -84,12 +96,12 @@ head(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame"))
 all.equal(as.matrix(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame")), as.matrix(lm(Petal.Length~Petal.Width,data = iris, method = "model.frame")))
 
 # On simulated dataset
-head(myLM(y~x, method = "model.frame"))
+head(myLM(y~x1+x2+x3+x4+x5, data = simdata, method = "model.frame"))
 
 # Compare with the lm function
-comp1 = as.matrix(myLM(y~x, method = "model.frame"))
+comp1 = as.matrix(myLM(y~x1+x2+x3+x4+x5, data = simdata, method = "model.frame"))
 colnames(comp1) = NULL
-comp2 = as.matrix(lm(y~x, method = "model.frame"))
+comp2 = as.matrix(lm(y~., data = simdata, method = "model.frame"))
 colnames(comp2) = NULL
 all.equal(comp1, comp2)
 ```
@@ -103,9 +115,10 @@ head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model) # 
 head(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model)
 
 # On simulated dataset
-head(myLM(y~x)$model)
+head(myLM(y~x1+x2+x3+x4+x5,data = simdata)$model)
 
-head(lm(y~x)$model)
+# Compare with the lm function
+all.equal(as.matrix(myLM(y~x1+x2+x3+x4+x5,data = simdata)$model), as.matrix(lm(y~.,data=simdata)$model))
 ```
 Use of x, y
 
@@ -116,6 +129,10 @@ head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
 # Compare with the lm function
 all.equal(as.matrix(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x),as.matrix(lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x))
 all.equal(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y,lm(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$y)
+
+# On simulated dataset
+all.equal(as.matrix(myLM(y~x1+x2+x3+x4+x5,data = simdata, x = T, y = T)$x),as.matrix(lm(y~.,data = simdata, x = T, y = T)$x))
+all.equal(myLM(y~x1+x2+x3+x4+x5,data = simdata, x = T, y = T)$y,lm(y~.,data = simdata, x = T, y = T)$y)
 ```
 
 Summary (benefites of the 'lm' class)
@@ -126,9 +143,9 @@ summary(myLM(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris
 summary(lm(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
 
 # On simulated dataset
-summary(myLM(y~x))
+summary(myLM(y~x1+x2+x3+x4+x5,data = simdata))
 # Compare with the lm function
-summary(lm(y~x))
+summary(lm(y~.,data = simdata))
 ```
 
 Diagnostic Plots (benefites of the 'lm' class)
@@ -141,6 +158,15 @@ plot(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
 par(mfrow=c(2,2))
 par(mar=c(2,2,2,2))
 plot(lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
+
+# On simulated dataset
+par(mfrow=c(2,2))
+par(mar=c(2,2,2,2))
+plot(myLM(y~x1+x2+x3+x4+x5,data = simdata))
+# Compare with the lm function
+par(mfrow=c(2,2))
+par(mar=c(2,2,2,2))
+plot(lm(y~.,data = simdata))
 ```
 
 Compare efficiency
@@ -148,11 +174,14 @@ Compare efficiency
 ```{r}
 formula = Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2
 bnch1 = bench::mark(myLM(formula,data = iris)$coefficients, lm(formula,data = iris)$coefficients)
+bnch1[,1] = c("myLM()", "lm()")
 bnch1
 
-bnch2 = bench::mark(myLM(y~x)$coefficients, lm(y~x)$coefficients)
+# On simulated dataset
+bnch2 = bench::mark(myLM(y~x1+x2+x3+x4+x5,data = simdata)$coefficients, lm(y~.,data = simdata)$coefficients)
+bnch2[,1] = c("myLM()", "lm()")
 bnch2
 ```
 
-The lack efficiency might be due to that I'm trying to implement everything in the original function, which slows down the process a bit.
+The lack of efficiency might be due to that I'm trying to implement everything that's being outputted in the original function, which slows down the process a bit.
 
