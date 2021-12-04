@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(myLM)
 ```
 
-Installation:
+## Installation:
 
 ```{r}
 #devtools::install_github("wjhlang/myLM")
@@ -40,7 +40,7 @@ myLM(Petal.Length~Petal.Width, data = iris)
 lm(Petal.Length~Petal.Width, data = iris)
 ```
 
-Simulated dataset
+### Simulated dataset
 
 ```{r, eval=FALSE}
 y = x%*%rnorm(5,1,10) + rnorm(10000,0,0.5)
@@ -52,8 +52,8 @@ colnames(simdata) = c("y", "x1", "x2", "x3", "x4", "x5")
 data("simdata")
 ```
 
-# Usage of different parameters
-Usage of weights
+## Usage of different parameters
+### Usage of weights
 
 ```{r}
 # Get random numbers from the uniform distribution as the weights
@@ -72,7 +72,7 @@ myLM(y~x1+x2+x3+x4+x5, data = simdata, weights = rand)
 lm(y~., data = simdata,weights = rand)
 ```
 
-Usage of subset
+### Usage of subset
 
 ```{r}
 myLM(Petal.Length~Petal.Width,data = iris, subset = "Petal.Width<2")
@@ -87,7 +87,7 @@ myLM(y~x1+x2+x3+x4+x5, data = simdata, subset = "x5<3")
 # Compare with the lm function
 lm(y~., data = simdata,subset = x5<3)
 ```
-Usage of method
+### Usage of method
 
 ```{r}
 head(myLM(Petal.Length~Petal.Width,data = iris, method = "model.frame"))
@@ -106,7 +106,7 @@ colnames(comp2) = NULL
 all.equal(comp1, comp2)
 ```
 
-Usage of model: Slight optimization that outputs the interaction term as well.
+### Usage of model: Slight optimization that outputs the interaction term as well.
 
 ```{r}
 head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, model = T)$model) # Same as myLM(Petal.Length~Petal.Width,data = iris)
@@ -120,7 +120,7 @@ head(myLM(y~x1+x2+x3+x4+x5,data = simdata)$model)
 # Compare with the lm function
 all.equal(as.matrix(myLM(y~x1+x2+x3+x4+x5,data = simdata)$model), as.matrix(lm(y~.,data=simdata)$model))
 ```
-Use of x, y
+### Use of x, y
 
 ```{r}
 head(myLM(Petal.Length~Petal.Width*Sepal.Width,data = iris, x = T, y = T)$x)
@@ -135,7 +135,7 @@ all.equal(as.matrix(myLM(y~x1+x2+x3+x4+x5,data = simdata, x = T, y = T)$x),as.ma
 all.equal(myLM(y~x1+x2+x3+x4+x5,data = simdata, x = T, y = T)$y,lm(y~.,data = simdata, x = T, y = T)$y)
 ```
 
-Summary (benefites of the 'lm' class)
+### Summary (benefites of the 'lm' class)
 
 ```{r}
 summary(myLM(Petal.Length~Petal.Width*Sepal.Width + log(Petal.Width),data = iris))
@@ -148,7 +148,7 @@ summary(myLM(y~x1+x2+x3+x4+x5,data = simdata))
 summary(lm(y~.,data = simdata))
 ```
 
-Diagnostic Plots (benefites of the 'lm' class)
+### Diagnostic Plots (benefites of the 'lm' class)
 
 ```{r}
 par(mfrow=c(2,2))
@@ -169,7 +169,7 @@ par(mar=c(2,2,2,2))
 plot(lm(y~.,data = simdata))
 ```
 
-Compare efficiency
+### Compare efficiency
 
 ```{r}
 formula = Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2
