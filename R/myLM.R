@@ -90,11 +90,11 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   }
   # Get all the covariates
   if (!is.null(data)){
-    if (is.data.frame(data) | is.list(data())){
+    if (is.data.frame(data) | is.list(data)){
       myx = model.matrix(formula, data = data, contrasts.arg = contrasts)
       myframe = model.frame(formula, data = data)
     } else {
-      stop(paste0('Invalid input, data is not expected to be ',class(data),'.'))
+      stop("Invalid input, 'data' must be a data.frame or list, not a matrix or an array.")
     }
   } else {
     myx = model.matrix(formula, contrasts.arg = contrasts)
