@@ -5,6 +5,7 @@ test_that("myLM works", {
   expect_error(myLM(1))
   expect_error(myLM(Petal.Length~Petal.Width))
   expect_warning(myLM(Petal.Length~Petal.Width, data = iris, method = "ayyy"))
+  expect_error(myLM(Petal.Length~Petal.Width, data = as.amtrix(iris)))
   expect_equal(round(as.numeric(myLM(Petal.Length~Petal.Width,data = iris, subset = "Petal.Width<2")$coefficients),4), c(0.9043, 2.4955))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, subset = Petal.Width<2))
   expect_error(myLM(Petal.Length~Petal.Width,data = iris, subset = 123))

@@ -55,6 +55,7 @@ An object of class "lm" is a list containing at least the following components:
 \item{x}{if requested, the design matrix used.}
 \item{y}{if requested, the response used.}
 \item{na.action}{(only where relevant) if not default, the assigned na.action}
+\item{F-statistics}{The F-statistics and associated p-value}
 }
 \description{
 Implementing a Linear Regression Model.

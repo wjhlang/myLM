@@ -146,7 +146,8 @@ plot(lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris))
 Compare efficiency
 
 ```{r}
-bnch1 = bench::mark(myLM(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients, lm(Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2,data = iris)$coefficients)
+formula = Petal.Length~Petal.Width*Sepal.Width + I(Sepal.Length)^2
+bnch1 = bench::mark(myLM(formula,data = iris)$coefficients, lm(formula,data = iris)$coefficients)
 bnch1
 
 bnch2 = bench::mark(myLM(y~x)$coefficients, lm(y~x)$coefficients)

@@ -30,7 +30,7 @@
 #' \item{x}{if requested, the design matrix used.}
 #' \item{y}{if requested, the response used.}
 #' \item{na.action}{(only where relevant) if not default, the assigned na.action}
-#'
+#' \item{F-statistics}{The F-statistics and associated p-value}
 #'
 #'
 #' @examples
@@ -51,7 +51,7 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
     stop('Invalid input, an object of class "formula" is expected.')
   }
   # The output list
-  listname = c("coefficients", "residuals", "effect", "rank", "fitted.values", "assign", "qr", "df.residual", "call", "terms", "contrasts", "model", "x", "y", "na.action")
+  listname = c("coefficients", "residuals", "effect", "rank", "fitted.values", "assign", "qr", "df.residual", "call", "terms", "contrasts", "model", "x", "y", "na.action", "F-statistics")
   fit <- setNames(vector("list", length(listname)), listname)
   # Get and set na.action
   if(is.null(na.actions)){
@@ -90,8 +90,12 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   }
   # Get all the covariates
   if (!is.null(data)){
-    myx = model.matrix(formula, data = data, contrasts.arg = contrasts)
-    myframe = model.frame(formula, data = data)
+    if (is.data.frame(data) | is.list(data())){
+      myx = model.matrix(formula, data = data, contrasts.arg = contrasts)
+      myframe = model.frame(formula, data = data)
+    } else {
+      stop(paste0('Invalid input, data is not expected to be ',class(data),'.'))
+    }
   } else {
     myx = model.matrix(formula, contrasts.arg = contrasts)
     myframe = model.frame(formula)
@@ -153,7 +157,7 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   fit[["effect"]] = myeffect
   fit[["rank"]] = myqr$rank
   fit[["df.residual"]] = n - ncol(myx)
-  fit[["call"]] = match.call
+  fit[["call"]] = match.call()
 
   # Get the terms object used
   myterms = terms(formula)
@@ -197,6 +201,16 @@ myLM <- function(formula, data = NULL, weights = NULL, subset = NULL, na.actions
   } else {
     stop("Invalid input, y is expected to be logical.")
   }
+
+  # Calculate F-statistics
+  SSE = sum(myres^2)
+  SSR = sum((myfitted - mean(myy))^2)
+  df1 = length(beta)- 1
+  df2 = n-length(beta)
+  Fstat = (SSR/df1)/(SSE/df2)
+  pval = pf(Fstat, df1, df2, lower.tail = FALSE)
+  fit[["F-statistics"]] = paste0("F-statistic: ", Fstat, " on ", df1, " and ", df2, " DF, p-value: ", pval)
+
   # Convert fit to class "lm" for summary and diagnostic plots
   class(fit) <- c("lm")
   fit
