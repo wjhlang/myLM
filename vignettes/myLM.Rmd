@@ -43,8 +43,8 @@ lm(Petal.Length~Petal.Width, data = iris)
 Simulated dataset
 
 ```{r}
-data("y")
-data("x")
+data("y") # y = x%*%rnorm(5,1,10) + rnorm(10000,0,0.5)
+data("x") # x = matrix(rnorm(50000), nrow=10000) 
 ```
 
 # Usage of different parameters
